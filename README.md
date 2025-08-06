@@ -1,2 +1,2 @@
 # frontend-projects
-All the Front end Projects
+All the Frontend Projects
