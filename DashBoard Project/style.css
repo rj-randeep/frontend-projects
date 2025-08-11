@@ -401,3 +401,31 @@ article h2:hover{
     text-decoration-color: gold;
     transition: 800ms;
 }
+
+@media screen and (max-width: 780px) {
+    main{
+    display: block;
+    }
+    .left{
+        position: static;
+        height: auto;
+    }
+    .profile-img{
+        width: 15%;
+        position: absolute;
+        top: 0.1rem;
+    }
+    .profile p{
+        margin-top: 5.5rem;
+    }
+    .navbar{
+        display: flex;
+        margin: 0%;
+        justify-content: space-around;
+    }
+    .nav{
+        margin: 0%;
+        padding: 0%;
+    }
+
+}
