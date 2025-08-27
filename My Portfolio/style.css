@@ -771,6 +771,15 @@ p {
     color: #ddd;
 }
 
+/* Ensure contact links are white and without underline */
+.contact-item a,
+.contact-item a:visited,
+.contact-item a:hover,
+.contact-item a:active {
+    color: #fff;
+    text-decoration: none;
+}
+
 .contact-item i {
     font-size: 1.2rem;
     color: #667eea;
@@ -848,6 +857,15 @@ p {
 .footer .social-link:hover {
     background: #667eea;
     color: white;
+}
+
+/* Footer text links (email/phone) should be white and no underline */
+.footer a,
+.footer a:visited,
+.footer a:hover,
+.footer a:active {
+    color: #fff;
+    text-decoration: none;
 }
 
 /* Modal */

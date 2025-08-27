@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollAnimations();
     initTypingEffect();
     initProjectLinks();
+    initCertificateLinks();
 });
 
 // Navbar functionality
@@ -173,23 +174,64 @@ function initContactForm() {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
-        
-        // Simulate form submission
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+
         const submitBtn = contactForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-        
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
-        
-        setTimeout(() => {
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            contactForm.reset();
+
+        // Try EmailJS first if available
+        const hasEmailJs = typeof emailjs !== 'undefined' && emailjs && typeof emailjs.send === 'function';
+
+        const subject = `Portfolio message - ${name}`;
+        const toEmail = 'randeepjangra687@gmail.com';
+
+        function finish(ok) {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
-        }, 2000);
+            if (ok) {
+                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
+                contactForm.reset();
+            } else {
+                showNotification('Could not send automatically. Opening Gmail...', 'info');
+                const gm = `https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(toEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(message + "\n\nFrom: " + name + " (" + email + ")")}`;
+                window.open(gm, '_blank', 'noopener');
+            }
+        }
+
+        if (hasEmailJs) {
+            try {
+                // Initialize once per session (safe to call multiple times)
+                if (!window.__emailjs_initialized) {
+                    // TODO: Replace with your EmailJS public key
+                    // emailjs.init('YOUR_PUBLIC_KEY');
+                    window.__emailjs_initialized = true;
+                }
+
+                // TODO: Replace service_id and template_id with your EmailJS IDs
+                const serviceId = 'YOUR_SERVICE_ID';
+                const templateId = 'YOUR_TEMPLATE_ID';
+
+                const templateParams = {
+                    from_name: name,
+                    from_email: email,
+                    to_email: toEmail,
+                    subject: subject,
+                    message: message
+                };
+
+                emailjs.send(serviceId, templateId, templateParams)
+                    .then(() => finish(true))
+                    .catch(() => finish(false));
+            } catch (err) {
+                finish(false);
+            }
+        } else {
+            finish(false);
+        }
     });
 }
 
@@ -528,6 +570,22 @@ function initProjectLinks() {
         card.style.cursor = 'pointer';
         card.addEventListener('click', (e) => {
             // avoid hijacking clicks on inner anchor tags if any
+            const target = e.target;
+            if (target && (target.tagName === 'A' || target.closest('a'))) return;
+            window.open(link, '_blank', 'noopener');
+        });
+    });
+}
+
+// Make certificate items clickable via data-link
+function initCertificateLinks() {
+    const certItems = document.querySelectorAll('.cert-item');
+    certItems.forEach(item => {
+        const link = item.getAttribute('data-link');
+        if (!link) return;
+
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', (e) => {
             const target = e.target;
             if (target && (target.tagName === 'A' || target.closest('a'))) return;
             window.open(link, '_blank', 'noopener');
