@@ -3,10 +3,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize all functionality
     initNavbar();
     initSmoothScrolling();
-    initProjectModal();
     initContactForm();
     initScrollAnimations();
     initTypingEffect();
+    initProjectLinks();
 });
 
 // Navbar functionality
@@ -518,6 +518,23 @@ document.head.appendChild(rippleStyles);
 // Initialize ripple effect
 addRippleEffect();
 
+// Make project cards clickable via data-link
+function initProjectLinks() {
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+        const link = card.getAttribute('data-link');
+        if (!link) return;
+
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', (e) => {
+            // avoid hijacking clicks on inner anchor tags if any
+            const target = e.target;
+            if (target && (target.tagName === 'A' || target.closest('a'))) return;
+            window.open(link, '_blank', 'noopener');
+        });
+    });
+}
+
 // Add scroll progress indicator
 function addScrollProgress() {
     const progressBar = document.createElement('div');
@@ -689,7 +706,7 @@ if (document.readyState === 'loading') {
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         const modal = document.getElementById('project-modal');
-        if (modal.style.display === 'block') {
+        if (modal && modal.style.display === 'block') {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
